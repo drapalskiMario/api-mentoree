@@ -14,6 +14,6 @@ async function bootstrap () {
     region: configService.get('AWS_REGION')
   })
 
-  await app.listen(configService.get('PORT'))
+  await app.listen(process.env.PORT || 3000)
 }
 bootstrap()
