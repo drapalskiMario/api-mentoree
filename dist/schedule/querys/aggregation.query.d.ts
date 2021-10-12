@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 export declare const scheduleWhitMentoredQuery: (idUserMentor: string, date?: Date) => ({
     $match: {
         idMentor: mongoose.Types.ObjectId;
