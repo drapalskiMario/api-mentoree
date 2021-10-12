@@ -5,17 +5,23 @@ import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User, UserDocument } from './entities/user.entity'
 import * as bcrypt from 'bcryptjs'
+import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
 export class UsersService {
-  constructor (@InjectModel(User.name) private readonly UserModel: Model<UserDocument>) { }
+  constructor (
+    @InjectModel(User.name) private readonly UserModel: Model<UserDocument>,
+    private jwtService: JwtService
+  ) { }
 
   async create (createUserDto: CreateUserDto) {
     const user = await this.UserModel.findOne({ email: createUserDto.email })
     if (!user) {
       createUserDto.password = bcrypt.hashSync(createUserDto.password)
       const createdUser = new this.UserModel(createUserDto)
-      return createdUser.save()
+      createdUser.token = this.jwtService.sign({ id: createdUser._id, isMentor: createdUser.isMentor })
+      await createdUser.save()
+      return { access_token: createdUser.token }
     }
     throw new HttpException('The received email is already in use', HttpStatus.FORBIDDEN)
   }

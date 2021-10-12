@@ -21,8 +21,10 @@ export class AuthService {
 
   async login (user: any) {
     const payload = { id: user._id, isMentor: user.isMentor }
+    const token = this.jwtService.sign(payload)
+    await this.usersService.update(user._id, { token })
     return {
-      access_token: this.jwtService.sign(payload)
+      access_token: token
     }
   }
 }
