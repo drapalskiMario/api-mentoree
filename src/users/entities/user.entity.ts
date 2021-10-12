@@ -37,7 +37,10 @@ export class User {
   skillsOrInterests: string[]
 
   @Prop()
-  uriPhoto?: string
+  image?: string
+
+  @Prop()
+  imageKey?: string
 
   @Prop({ required: true })
   token: string

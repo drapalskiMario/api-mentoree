@@ -1,11 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
+import { JwtService } from '@nestjs/jwt'
+import { S3 } from 'aws-sdk'
+import { Express } from 'express'
+import * as bcrypt from 'bcryptjs'
+import { extname } from 'path'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User, UserDocument } from './entities/user.entity'
-import * as bcrypt from 'bcryptjs'
-import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
 export class UsersService {
@@ -46,10 +49,18 @@ export class UsersService {
     throw new HttpException('User not found', HttpStatus.NOT_FOUND)
   }
 
-  async update (id: string, updateUserDto: UpdateUserDto, idByToken: string) {
+  async update (id: string, updateUserDto: UpdateUserDto, idByToken: string, file?: Express.Multer.File) {
     if (id === idByToken) {
       const mentorExists = await this.UserModel.findById(id)
       if (mentorExists) {
+        if (file) {
+          if (mentorExists.image && mentorExists.imageKey) {
+            await this.deletingFile(mentorExists.imageKey)
+          }
+          const imageSaved = await this.uploadFile(file.buffer, file.originalname)
+          updateUserDto.image = imageSaved.image
+          updateUserDto.imageKey = imageSaved.imageKey
+        }
         return this.UserModel.findByIdAndUpdate({ _id: id }, { $set: updateUserDto }, { new: true })
       }
       throw new HttpException('User not found', HttpStatus.NOT_FOUND)
@@ -66,5 +77,27 @@ export class UsersService {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND)
     }
     throw new HttpException('access unauthorized', HttpStatus.UNAUTHORIZED)
+  }
+
+  async uploadFile (dataBuffer: Buffer, filename: string) {
+    const s3 = new S3()
+    const uploadResult = await s3.upload({
+      Bucket: process.env.BUCKET_NAME,
+      Body: dataBuffer,
+      Key: `${new Date().valueOf()}${extname(filename)}`,
+      ContentType: 'valid content type'
+    }).promise()
+
+    const image = uploadResult.Location
+    const imageKey = uploadResult.Key
+    return { image, imageKey }
+  }
+
+  async deletingFile (imageKey: string) {
+    const s3 = new S3()
+    await s3.deleteObject({
+      Bucket: process.env.BUCKET_NAME,
+      Key: imageKey
+    }).promise()
   }
 }

@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, UseGuards, Req } from '@nestjs/common'
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, UseGuards, Req, UseInterceptors, UploadedFile } from '@nestjs/common'
 import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { AuthGuard } from '@nestjs/passport'
+import { FileInterceptor } from '@nestjs/platform-express'
+import { Express } from 'express'
 
 @Controller('users')
 export class UsersController {
@@ -27,8 +29,14 @@ export class UsersController {
 
   @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
-  update (@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Req() req) {
-    return this.usersService.update(id, updateUserDto, req.user.id)
+  @UseInterceptors(FileInterceptor('image'))
+  update (
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @Req() req,
+    @UploadedFile() image: Express.Multer.File
+  ) {
+    return this.usersService.update(id, updateUserDto, req.user.id, image)
   }
 
   @UseGuards(AuthGuard('jwt'))
