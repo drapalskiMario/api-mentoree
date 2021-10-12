@@ -46,19 +46,25 @@ export class UsersService {
     throw new HttpException('User not found', HttpStatus.NOT_FOUND)
   }
 
-  async update (id: string, updateUserDto: UpdateUserDto) {
-    const mentorExists = await this.UserModel.findById(id)
-    if (mentorExists) {
-      return this.UserModel.findByIdAndUpdate({ _id: id }, { $set: updateUserDto }, { new: true })
+  async update (id: string, updateUserDto: UpdateUserDto, idByToken: string) {
+    if (id === idByToken) {
+      const mentorExists = await this.UserModel.findById(id)
+      if (mentorExists) {
+        return this.UserModel.findByIdAndUpdate({ _id: id }, { $set: updateUserDto }, { new: true })
+      }
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND)
     }
-    throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+    throw new HttpException('access unauthorized', HttpStatus.UNAUTHORIZED)
   }
 
-  async remove (id: string) {
-    const userDeleted = await this.UserModel.deleteOne({ _id: id })
-    if (userDeleted.deletedCount) {
-      return
+  async remove (id: string, idByToken: string) {
+    if (id === idByToken) {
+      const userDeleted = await this.UserModel.deleteOne({ _id: id })
+      if (userDeleted.deletedCount) {
+        return
+      }
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND)
     }
-    throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+    throw new HttpException('access unauthorized', HttpStatus.UNAUTHORIZED)
   }
 }

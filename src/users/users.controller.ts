@@ -15,23 +15,26 @@ export class UsersController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get()
-  findAll (@Req() req) {
-    return req.user
+  findAll () {
+    return this.usersService.findAll()
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   findOne (@Param('id') id: string) {
     return this.usersService.findOne(id)
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
-  update (@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto)
+  update (@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Req() req) {
+    return this.usersService.update(id, updateUserDto, req.user.id)
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  remove (@Param('id') id: string) {
-    return this.usersService.remove(id)
+  remove (@Param('id') id: string, @Req() req) {
+    return this.usersService.remove(id, req.user.id)
   }
 }
