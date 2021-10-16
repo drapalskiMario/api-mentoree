@@ -10,7 +10,6 @@ export declare class User {
     job: string;
     specialties: string;
     seniority: 'Junior' | 'Pleno' | 'Sênior';
-    skillsOrInterests: string[];
     image?: string;
     imageKey?: string;
     token: string;

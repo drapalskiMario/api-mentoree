@@ -33,9 +33,6 @@ export class User {
   @Prop({ type: String, enum: ['Junior', 'Pleno', 'Sênior'] })
   seniority: 'Junior' | 'Pleno' | 'Sênior'
 
-  @Prop({ type: [String], required: true })
-  skillsOrInterests: string[]
-
   @Prop()
   image?: string
 

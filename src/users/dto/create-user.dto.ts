@@ -45,7 +45,4 @@ export class CreateUserDto {
   @ValidateIf(prop => prop.isMentor === true)
   @IsEnum(Seniority)
   seniority: Seniority
-
-  @IsString({ each: true })
-  skillsOrInterests: string[]
 }

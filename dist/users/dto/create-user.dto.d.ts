@@ -20,6 +20,5 @@ export declare class CreateUserDto {
     job: string;
     specialties: Specialties;
     seniority: Seniority;
-    skillsOrInterests: string[];
 }
 export {};
