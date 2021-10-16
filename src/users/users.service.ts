@@ -29,8 +29,12 @@ export class UsersService {
     throw new HttpException('The received email is already in use', HttpStatus.FORBIDDEN)
   }
 
-  findAll () {
-    return this.UserModel.find().exec()
+  findAll (isMentor: boolean) {
+    return this.UserModel.find({ isMentor }).exec()
+  }
+
+  findAllBySpecialties (specialties: string) {
+    return this.UserModel.find({ specialties }).exec()
   }
 
   async findOne (id: string) {

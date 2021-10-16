@@ -26,11 +26,16 @@ let UsersController = class UsersController {
     create(createUserDto) {
         return this.usersService.create(createUserDto);
     }
-    findAll() {
-        return this.usersService.findAll();
+    findAll(query) {
+        if (query.specialties) {
+            return this.usersService.findAllBySpecialties(query.specialties);
+        }
+        else {
+            return this.usersService.findAll(true);
+        }
     }
-    findOne(id) {
-        return this.usersService.findOne(id);
+    findOne() {
+        return this.usersService.findAll(false);
     }
     update(id, updateUserDto, req, image) {
         return this.usersService.update(id, updateUserDto, req.user.id, image);
@@ -47,18 +52,17 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "create", null);
 __decorate([
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
-    (0, common_1.Get)(),
+    (0, common_1.Get)('/mentors'),
+    __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "findAll", null);
 __decorate([
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)('/mentores'),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "findOne", null);
 __decorate([

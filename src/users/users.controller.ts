@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, UseGuards, Req, UseInterceptors, UploadedFile } from '@nestjs/common'
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, UseGuards, Req, UseInterceptors, UploadedFile, Query } from '@nestjs/common'
 import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
@@ -15,16 +15,19 @@ export class UsersController {
     return this.usersService.create(createUserDto)
   }
 
-  @UseGuards(AuthGuard('jwt'))
-  @Get()
-  findAll () {
-    return this.usersService.findAll()
+  @Get('/mentors')
+  findAll (@Query() query) {
+    if (query.specialties) {
+      return this.usersService.findAllBySpecialties(query.specialties)
+    } else {
+      return this.usersService.findAll(true)
+    }
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get(':id')
-  findOne (@Param('id') id: string) {
-    return this.usersService.findOne(id)
+  @Get('/mentores')
+  findOne () {
+    return this.usersService.findAll(false)
   }
 
   @UseGuards(AuthGuard('jwt'))

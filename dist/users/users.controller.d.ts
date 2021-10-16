@@ -8,12 +8,12 @@ export declare class UsersController {
     create(createUserDto: CreateUserDto): Promise<{
         access_token: string;
     }>;
-    findAll(): Promise<(import("./entities/user.entity").User & import("mongoose").Document<any, any, any> & {
+    findAll(query: any): Promise<(import("./entities/user.entity").User & import("mongoose").Document<any, any, any> & {
         _id: any;
     })[]>;
-    findOne(id: string): Promise<import("./entities/user.entity").User & import("mongoose").Document<any, any, any> & {
+    findOne(): Promise<(import("./entities/user.entity").User & import("mongoose").Document<any, any, any> & {
         _id: any;
-    }>;
+    })[]>;
     update(id: string, updateUserDto: UpdateUserDto, req: any, image: Express.Multer.File): Promise<import("./entities/user.entity").User & import("mongoose").Document<any, any, any> & {
         _id: any;
     }>;

@@ -12,7 +12,10 @@ export declare class UsersService {
     create(createUserDto: CreateUserDto): Promise<{
         access_token: string;
     }>;
-    findAll(): Promise<(User & import("mongoose").Document<any, any, any> & {
+    findAll(isMentor: boolean): Promise<(User & import("mongoose").Document<any, any, any> & {
+        _id: any;
+    })[]>;
+    findAllBySpecialties(specialties: string): Promise<(User & import("mongoose").Document<any, any, any> & {
         _id: any;
     })[]>;
     findOne(id: string): Promise<User & import("mongoose").Document<any, any, any> & {

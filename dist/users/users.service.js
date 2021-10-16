@@ -56,8 +56,11 @@ let UsersService = class UsersService {
         }
         throw new common_1.HttpException('The received email is already in use', common_1.HttpStatus.FORBIDDEN);
     }
-    findAll() {
-        return this.UserModel.find().exec();
+    findAll(isMentor) {
+        return this.UserModel.find({ isMentor }).exec();
+    }
+    findAllBySpecialties(specialties) {
+        return this.UserModel.find({ specialties }).exec();
     }
     async findOne(id) {
         const user = await this.UserModel.findById(id);
