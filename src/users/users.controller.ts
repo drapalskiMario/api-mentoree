@@ -25,7 +25,7 @@ export class UsersController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('/mentores')
+  @Get('/mentoreds')
   findOne () {
     return this.usersService.findAll(false)
   }
